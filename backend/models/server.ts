@@ -43,7 +43,9 @@ class server {
     this.app.use(express.json());
   }
 
-  routes() {}
+  routes() {
+    
+  }
 
   listen() {
     this.app.listen(this.port, () => {
