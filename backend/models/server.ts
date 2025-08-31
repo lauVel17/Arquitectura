@@ -6,7 +6,7 @@ import { createServer, Server as HTTPServer } from "http";
 import dotenv from "dotenv";
 
 import usuarioRoutes from "../routers/usuario"                     
-import paisRoutes from "../routers/usuario"
+import paisRoutes from "../routers/pais"
 import departamentoRoutes from "../routers/departamento"
 import ciudadRoutes from "../routers/ciudad"
 import proyectoRoutes from "../routers/proyecto"

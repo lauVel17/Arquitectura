@@ -1,6 +1,7 @@
 import { Model, DataTypes, IntegerDataType } from "sequelize";
 import db from "../db/conexion";
 import ciudad from "./ciudad";
+import pais from "./pais";
 
 interface departamentoAttributes {
     iddepartamento: number;
@@ -26,7 +27,7 @@ departamento.init(
         
         idpais: {
             type: DataTypes.INTEGER,
-            field: "id_pais"
+            field: "pais_id"
         },
 
         nombre: {
@@ -42,14 +43,14 @@ departamento.init(
     }
 );
 
-departamento.hasMany (ciudad, {
-   foreignKey:"ciudadid",
+pais.hasMany(departamento, {
+   foreignKey:"idpais",
    as:"departamento" 
 });
 
-ciudad.belongsTo(departamento, {
-    foreignKey:"ciudadid",
-    as:"ciudad"
+departamento.belongsTo(pais, {
+    foreignKey:"idpais",
+    as:"pais"
 }
 )
 

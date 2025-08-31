@@ -28,7 +28,7 @@ usuario.init(
     {
         nodocumento: {
             type: DataTypes.INTEGER,
-            field: "numero_documento",
+            field: "no_documento",
             primaryKey: true,
             autoIncrement: true,
         },   
@@ -60,7 +60,7 @@ usuario.init(
 
         ciudadid: {
             type: DataTypes.INTEGER,
-            field: "ciudad", 
+            field: "ciudad_id", 
             references: {model:ciudad,key:"idciudad"}
         },
     },

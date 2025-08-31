@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 export const consultarAllUser = async (req: Request, res: Response) => {
   try {
     const usuarios = await usuario.findAll({
-      order: [["idUsuario", "DESC"]],
+      /* order: [["idUsuario", "DESC"]], */
     });
 
     if (usuarios.length === 0) {
