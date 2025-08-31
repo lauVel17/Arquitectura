@@ -20,7 +20,7 @@ export const createUser = async(req:Request, resp:Response)=>{
     }catch(error){
         console.log("Error al crear el usuario",error);
         resp.status(500).json({
-            msg:"No se logró completar la cración del usuario",
+            msg:"No se logró completar la creación del usuario",
         });
     }
     
