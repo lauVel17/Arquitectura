@@ -50,7 +50,7 @@ usuario.init(
 
         estado: {
             type: DataTypes.INTEGER,
-            field: "telefono"
+            field: "estado"
         },
 
         fechaingreso: {

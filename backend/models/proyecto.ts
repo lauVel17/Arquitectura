@@ -25,14 +25,14 @@ proyecto.init(
     {
         idproyecto: {
             type: DataTypes.INTEGER,
-            field: "numero_proyecto",
+            field: "id_proyecto",
             primaryKey: true,
             autoIncrement: true,
         },   
         
         nombre: {
             type: DataTypes.INTEGER,
-            field: "nombre_proyecto"
+            field: "nombre"
         },
 
         descripcion: {
@@ -42,7 +42,7 @@ proyecto.init(
 
         ciudadid: {
             type: DataTypes.INTEGER,
-            field: "nombre_ciudad"
+            field: "ciudad_id"
         },
 
         fechainicio: {

@@ -23,7 +23,7 @@ pais.init(
         
         nombre: {
             type: DataTypes.INTEGER,
-            field: "nombre_pais"
+            field: "nombre"
         },
     },
     {

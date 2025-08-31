@@ -26,7 +26,7 @@ ciudad.init(
         
         iddepartamento: {
             type: DataTypes.INTEGER,
-            field: "id_departamento"
+            field: "departamento_id"
         },
 
         nombre: {
@@ -43,12 +43,12 @@ ciudad.init(
 );
 
 departamento.hasMany (ciudad, {
-   foreignKey:"iddepartamento",
+   foreignKey:"id_ciudad",
    as:"ciudad" 
 });
 
 ciudad.belongsTo(departamento, {
-    foreignKey:"iddepartamento",
+    foreignKey:"departamento_id",
     as:"departamento"
 }
 )

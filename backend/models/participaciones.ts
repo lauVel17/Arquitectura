@@ -27,12 +27,12 @@ participacion.init(
         
         proyectoid: {
             type: DataTypes.INTEGER,
-            field: "id_proyecto"
+            field: "proyecto_id"
         },
 
         usuarioid: {
             type: DataTypes.INTEGER,
-            field: "id_usuario"
+            field: "usuario_id"
         },
     },
     {
