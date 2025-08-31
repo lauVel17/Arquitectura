@@ -1,5 +1,23 @@
 import usuario from "../models/usuarios";
 import { Request, Response } from "express";
+//consultar todas los usuarios
+export const consultarAllUser = async (req: Request, res: Response) => {
+  try {
+    const usuarios = await usuario.findAll({
+      /* order: [["idUsuario", "DESC"]], */
+    }); 
+    if (usuarios.length === 0) {
+      return res.status(400).json({ msg: "No se encontraron usuarios" });
+    }
+
+    res.json(usuarios);
+  } catch (error) {
+    console.error("Error al consultar usuarios:", error);
+    res.status(500).json({
+      msg: "No se pudo completar la operación. Intenta nuevamente más tarde o contacte al administrador.",
+    });
+  }
+};
 //Crear usuario
 export const createUser = async(req:Request, resp:Response)=>{
     const{body}=req;
