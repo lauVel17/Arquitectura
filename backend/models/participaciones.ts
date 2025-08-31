@@ -1,7 +1,7 @@
 import { Model, DataTypes, IntegerDataType } from "sequelize";
 import db from "../db/conexion";
 import proyecto from "./proyecto";
-import usuario from "./usarios";
+import usuario from "./usuarios";
 
 interface participacionAttributes {
     idparticipaciones: Number;
