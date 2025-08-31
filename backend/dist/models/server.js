@@ -16,12 +16,23 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const conexion_1 = __importDefault(require("../db/conexion"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const usuario_1 = __importDefault(require("../routers/usuario"));
+const pais_1 = __importDefault(require("../routers/pais"));
+const departamento_1 = __importDefault(require("../routers/departamento"));
+const ciudad_1 = __importDefault(require("../routers/ciudad"));
+const proyecto_1 = __importDefault(require("../routers/proyecto"));
+const participaciones_1 = __importDefault(require("../routers/participaciones"));
 dotenv_1.default.config();
 /* IMPORT RUTAS */
 class server {
     constructor() {
         this.apiPaths = {
-        //
+            usuario: "/api/usuario",
+            pais: "/api/pais",
+            departamento: "/api/departamento",
+            ciudad: "/api/ciudad",
+            proyecto: "/api/proyecto",
+            participaciones: "/api/participaciones"
         };
         this.app = (0, express_1.default)();
         /* definir puerto de conexion */
@@ -50,7 +61,14 @@ class server {
         /* Body */
         this.app.use(express_1.default.json());
     }
-    routes() { }
+    routes() {
+        this.app.use(this.apiPaths.usuario, usuario_1.default);
+        this.app.use(this.apiPaths.pais, pais_1.default);
+        this.app.use(this.apiPaths.departamento, departamento_1.default);
+        this.app.use(this.apiPaths.ciudad, ciudad_1.default);
+        this.app.use(this.apiPaths.proyecto, proyecto_1.default);
+        this.app.use(this.apiPaths.participaciones, participaciones_1.default);
+    }
     listen() {
         this.app.listen(this.port, () => {
             console.log("Servidor conectado en el puerto " + this.port);

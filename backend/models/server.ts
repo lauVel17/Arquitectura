@@ -4,6 +4,14 @@ import db from "../db/conexion";
 import path from "path";
 import { createServer, Server as HTTPServer } from "http";
 import dotenv from "dotenv";
+
+import usuarioRoutes from "../routers/usuario"                     
+import paisRoutes from "../routers/pais"
+import departamentoRoutes from "../routers/departamento"
+import ciudadRoutes from "../routers/ciudad"
+import proyectoRoutes from "../routers/proyecto"
+import participacionesRoutes from "../routers/participaciones" 
+
 dotenv.config();
 
 /* IMPORT RUTAS */
@@ -12,7 +20,13 @@ class server {
   private app: Application;
   private port: string;
   private apiPaths = {
-    //
+    usuario: "/api/usuario",
+    pais: "/api/pais",
+    departamento: "/api/departamento",
+    ciudad: "/api/ciudad",
+    proyecto: "/api/proyecto",
+    participaciones: "/api/participaciones"
+
   };
 
   constructor() {
@@ -44,7 +58,12 @@ class server {
   }
 
   routes() {
-    
+    this.app.use(this.apiPaths.usuario, usuarioRoutes);
+    this.app.use(this.apiPaths.pais, paisRoutes);
+    this.app.use(this.apiPaths.departamento, departamentoRoutes);
+    this.app.use(this.apiPaths.ciudad, ciudadRoutes);
+    this.app.use(this.apiPaths.proyecto, proyectoRoutes);
+    this.app.use(this.apiPaths.participaciones, participacionesRoutes);
   }
 
   listen() {
