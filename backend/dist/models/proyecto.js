@@ -11,21 +11,21 @@ class proyecto extends sequelize_1.Model {
 proyecto.init({
     idproyecto: {
         type: sequelize_1.DataTypes.INTEGER,
-        field: "numero_proyecto",
+        field: "id_proyecto",
         primaryKey: true,
         autoIncrement: true,
     },
     nombre: {
-        type: sequelize_1.DataTypes.INTEGER,
-        field: "nombre_proyecto"
+        type: sequelize_1.DataTypes.STRING,
+        field: "nombre"
     },
     descripcion: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.STRING,
         field: "descripcion"
     },
     ciudadid: {
         type: sequelize_1.DataTypes.INTEGER,
-        field: "nombre_ciudad"
+        field: "ciudad_id"
     },
     fechainicio: {
         type: sequelize_1.DataTypes.DATE,

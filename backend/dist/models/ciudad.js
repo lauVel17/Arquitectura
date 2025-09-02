@@ -17,10 +17,10 @@ ciudad.init({
     },
     iddepartamento: {
         type: sequelize_1.DataTypes.INTEGER,
-        field: "id_departamento"
+        field: "departamento_id"
     },
     nombre: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.STRING,
         field: "nombre"
     },
 }, {

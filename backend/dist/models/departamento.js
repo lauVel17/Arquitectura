@@ -20,7 +20,7 @@ departamento.init({
         field: "pais_id"
     },
     nombre: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.STRING,
         field: "nombre"
     },
 }, {

@@ -34,12 +34,12 @@ usuario.init(
         },   
         
         nombreapellido: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: "nombre_apellido"
         },
 
         correo: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: "correo"
         },
 
@@ -49,7 +49,7 @@ usuario.init(
         },
 
         estado: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: "estado"
         },
 

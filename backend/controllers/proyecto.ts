@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
 import proyecto from "../models/proyecto";
+import usuario from "../models/usuarios";
+import participacion from "../models/participaciones";
+import ciudad from "../models/ciudad";
+import departamento from "../models/departamento";
+import pais from "../models/pais";
 //consultar departamento
 export const consultarProy = async (req: Request, res: Response) => {
   try {
@@ -24,31 +29,43 @@ export const createProyecto = async (req: Request, resp: Response) => {
   const { body } = req;
   try {
     console.log("Datos recibidos ", body);
-    const proyCreate = await proyecto.create({
-    idproyecto: body.idproyecto,
-    nombre: body.nombre,
-    descripcion: body.descripcion,
-    ciudadid: body.ciudadid,
-    fechainicio: body.fechainicio,
-    fechafin: body.fechafin,
+
+   
+    const ciudadEncontrada = await ciudad.findOne({
+      where: { nombre: body.ciudadNombre },
     });
+
+    if (!ciudadEncontrada) {
+      return resp.status(400).json({
+        msg: `No se encontró la ciudad con nombre: ${body.ciudadNombre}`,
+      });
+    }
+    const proyCreate = await proyecto.create({
+      nombre: body.nombre,
+      descripcion: body.descripcion,
+      ciudadid: ciudadEncontrada.idciudad, 
+      fechainicio: body.fechainicio,
+      fechafin: body.fechafin,
+    });
+
     resp.status(200).json({
       msg: "El proyecto ha sido creado exitosamente",
       proyCreate,
     });
-    }catch(error){
-        console.log("Error al crear el proyecto ",error);
-        resp.status(500).json({
-            msg:"No se logró completar la creación del proyecto ",
-        });
-    }
- }
+  } catch (error) {
+    console.log("Error al crear el proyecto ", error);
+    resp.status(500).json({
+      msg: "No se logró completar la creación del proyecto",
+    });
+  }
+};
+
 
 //Consultar proyecto
 export const consultProyecto = async (req: Request, res: Response) => {
   const { id } = req.params;
   const ProyectCons = await proyecto.findByPk(id);
-  if (!ProyectCons) {
+  if (ProyectCons) {
     res.json(ProyectCons);
   } else {
     res.status(400).json({
@@ -62,7 +79,7 @@ export const updateProyecto = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { body } = req;
   try {
-    const proyectUpdate= await proyecto.findByPk(id);
+    const proyectUpdate = await proyecto.findByPk(id);
     if (!proyectUpdate) {
       return res.status(404).json({
         msg: "No se encontró el proyecto",
@@ -71,15 +88,15 @@ export const updateProyecto = async (req: Request, res: Response) => {
 
     console.log("Datos recibidos para proceder la actualización", body);
     await proyectUpdate.update({
-        idproyecto: body.idproyecto,
-        nombre: body.nombre,
-        descripcion: body.descripcion,
-        ciudadid: body.ciudadid,
-        fechainicio: body.fechainicio,
-        fechafin: body.fechafin,
+   /*    idproyecto: body.idproyecto, */
+      nombre: body.nombre,
+      descripcion: body.descripcion,
+      ciudadid: body.ciudadid,
+      fechainicio: body.fechainicio,
+      fechafin: body.fechafin,
     });
     res.status(200).json({
-      msg: "E   l proyecto se ha actualizado correctamente",
+      msg: "El proyecto se ha actualizado correctamente",
       proyectUpdate,
     });
   } catch (error) {
@@ -104,4 +121,172 @@ export const delateProyecto = async (req: Request, res: Response) => {
     msg: "El proyecto  ha sido eliminado de forma correcta",
     proyecto,
   });
+};
+
+
+export const consultarProyectoPorNombre = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { nombre } = req.params;
+
+    const proyectoEncontrado = await proyecto.findOne({
+      where: { nombre: nombre },
+    });
+
+    if (proyectoEncontrado) {
+      res.json(proyectoEncontrado);
+    } else {
+      res.status(400).json({
+        msg: "No se encontro el proyecto especificado",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al consultar el proyecto" });
+  }
+};
+
+export const consultarProyectoPorCiudad = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { nombre } = req.params;
+    console.log('nombre recibido', nombre)
+
+    const ciudadEncontrada = await ciudad.findOne({
+      where: { nombre: nombre },
+    });
+
+    if (!ciudadEncontrada) {
+      return res.status(404).json({
+        mensaje: `No se encontró la ciudad con el nombre ${nombre}`,
+      });
+    }
+
+    const proyectos = await proyecto.findAll({
+      where: { ciudadid: ciudadEncontrada.idciudad },
+    });
+
+    res.json({
+      mensaje: `Los proyectos que se encuentran en la ciudad ${nombre} son:`,
+      proyectos: proyectos.map((p: any) => ({
+        idProyecto: p.idProyecto,
+        nombre: p.nombre,
+        descripcion: p.descripcion,
+      })),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al consultar los proyectos" });
+  }
+};
+
+export const consultarProyectoPorDepartamento = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { nombreDepto } = req.params;
+
+    const departamentoEncontrado = await departamento.findOne({
+      where: { nombre: nombreDepto },
+    });
+
+    if (!departamentoEncontrado) {
+      return res.status(404).json({
+        mensaje: `No se encontró el departamento con el nombre ${nombreDepto}`,
+      });
+    }
+
+    const ciudades = await ciudad.findAll({
+      where: { iddepartamento: departamentoEncontrado.iddepartamento },
+    });
+
+    if (!ciudades.length) {
+      return res.json({
+        mensaje: `No se encontraron ciudades en el departamento ${nombreDepto}`,
+        proyectos: [],
+      });
+    }
+
+    const ciudadesIds = ciudades.map((c) => c.idciudad);
+
+    const proyectosEncontrados = await proyecto.findAll({
+      where: { ciudadid: ciudadesIds },
+    });
+
+    res.json({
+      mensaje: `Los proyectos que se encuentran en el departamento ${nombreDepto} son:`,
+      proyectos: proyectosEncontrados.map((p) => ({
+        idProyecto: p.idproyecto,
+        nombre: p.nombre,
+        descripcion: p.descripcion,
+      })),
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Error al consultar los proyectos por departamento" });
+  }
+};
+
+export const consultarProyectoPorPaís = async (req: Request, res: Response) => {
+  try {
+    const { nombrePais } = req.params;
+
+ 
+    const paisEncontrado = await pais.findOne({
+      where: { nombre: nombrePais },
+    });
+
+    if (!paisEncontrado) {
+      return res.status(404).json({
+        mensaje: `No se encontró el país con el nombre ${nombrePais}`,
+      });
+    }
+
+    const departamentos = await departamento.findAll({
+      where: { idpais: paisEncontrado.idpais },
+    });
+
+    if (!departamentos.length) {
+      return res.json({
+        mensaje: `No se encontraron departamentos en el país ${nombrePais}`,
+        proyectos: [],
+      });
+    }
+
+
+    const departamentosIds = departamentos.map((d) => d.iddepartamento);
+    const ciudades = await ciudad.findAll({
+      where: { iddepartamento: departamentosIds },
+    });
+
+    if (!ciudades.length) {
+      return res.json({
+        mensaje: `No se encontraron ciudades en el país ${nombrePais}`,
+        proyectos: [],
+      });
+    }
+    const ciudadesIds = ciudades.map((c) => c.idciudad);
+    const proyectosEncontrados = await proyecto.findAll({
+      where: { ciudadid: ciudadesIds },
+    });
+
+    res.json({
+      mensaje: `Los proyectos que se encuentran en el país ${nombrePais} son:`,
+      proyectos: proyectosEncontrados.map((p) => ({
+        idProyecto: p.idproyecto,
+        nombre: p.nombre,
+        descripcion: p.descripcion,
+      })),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al consultar los proyectos por país" });
+  }
 };

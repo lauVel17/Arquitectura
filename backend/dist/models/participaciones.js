@@ -17,11 +17,11 @@ participacion.init({
     },
     proyectoid: {
         type: sequelize_1.DataTypes.INTEGER,
-        field: "id_proyecto"
+        field: "proyecto_id"
     },
     usuarioid: {
         type: sequelize_1.DataTypes.INTEGER,
-        field: "id_usuario"
+        field: "usuario_id"
     },
 }, {
     sequelize: conexion_1.default,

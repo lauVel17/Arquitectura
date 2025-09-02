@@ -16,11 +16,11 @@ usuario.init({
         autoIncrement: true,
     },
     nombreapellido: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.STRING,
         field: "nombre_apellido"
     },
     correo: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.STRING,
         field: "correo"
     },
     telefono: {
@@ -28,8 +28,8 @@ usuario.init({
         field: "telefono"
     },
     estado: {
-        type: sequelize_1.DataTypes.INTEGER,
-        field: "telefono"
+        type: sequelize_1.DataTypes.STRING,
+        field: "estado"
     },
     fechaingreso: {
         type: sequelize_1.DataTypes.DATE,

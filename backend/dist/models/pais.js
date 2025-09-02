@@ -15,8 +15,8 @@ pais.init({
         autoIncrement: true,
     },
     nombre: {
-        type: sequelize_1.DataTypes.INTEGER,
-        field: "nombre_pais"
+        type: sequelize_1.DataTypes.STRING,
+        field: "nombre"
     },
 }, {
     sequelize: conexion_1.default,

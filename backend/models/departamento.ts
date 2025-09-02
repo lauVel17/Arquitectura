@@ -4,7 +4,7 @@ import ciudad from "./ciudad";
 import pais from "./pais";
 
 interface departamentoAttributes {
-    iddepartamento: number;
+    iddepartamento?: number;
     idpais: number;
     nombre: string;
 }
@@ -31,7 +31,7 @@ departamento.init(
         },
 
         nombre: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: "nombre"
         },
     },

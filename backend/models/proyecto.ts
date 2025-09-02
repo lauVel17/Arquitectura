@@ -3,7 +3,7 @@ import db from "../db/conexion";
 import ciudad from "./ciudad";
 
 interface proyectoAttributes {
-    idproyecto: number;
+    idproyecto?: number;
     nombre: string;
     descripcion: string;
     ciudadid: number;
@@ -31,12 +31,12 @@ proyecto.init(
         },   
         
         nombre: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: "nombre"
         },
 
         descripcion: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: "descripcion"
         },
 

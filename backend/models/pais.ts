@@ -2,7 +2,7 @@ import { Model, DataTypes, IntegerDataType } from "sequelize";
 import db from "../db/conexion";
 
 interface paisAttributes {
-    idpais: number;
+    idpais?: number;
     nombre: string;
 }
 
@@ -22,7 +22,7 @@ pais.init(
         },   
         
         nombre: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: "nombre"
         },
     },

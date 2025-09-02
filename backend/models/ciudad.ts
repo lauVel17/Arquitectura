@@ -3,15 +3,15 @@ import db from "../db/conexion";
 import departamento from "./departamento";
 
 interface ciudadAttributes {
-    idciudad: string;
-    iddepartamento: string;
+    idciudad?: number;
+    iddepartamento: number;
     nombre: string;
 }
 
 class ciudad extends Model <ciudadAttributes> implements ciudadAttributes {
 
-    public idciudad!: string;
-    public iddepartamento!: string;
+    public idciudad!: number;
+    public iddepartamento!: number;
     public nombre!: string;
 }
 
@@ -30,7 +30,7 @@ ciudad.init(
         },
 
         nombre: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: "nombre"
         },
     },
@@ -43,12 +43,12 @@ ciudad.init(
 );
 
 departamento.hasMany (ciudad, {
-   foreignKey:"id_ciudad",
+   foreignKey:"iddepartamento",
    as:"ciudad" 
 });
 
 ciudad.belongsTo(departamento, {
-    foreignKey:"departamento_id",
+    foreignKey:"iddepartamento",
     as:"departamento"
 }
 )

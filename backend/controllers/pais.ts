@@ -6,6 +6,7 @@ export const consultarPais = async (req: Request, res: Response) => {
   try {
     const paisc = await pais.findAll({
       /* order: [["idpais", "DESC"]], */
+            attributes:["nombre"]
     });
 
     if (paisc.length === 0) {
@@ -26,26 +27,25 @@ export const createPais = async (req: Request, resp: Response) => {
   try {
     console.log("Datos recibidos ", body);
     const paiscreate = await pais.create({
-     idpais: body.idpais,
-     nombre: body.nombre,
+      nombre: body.nombre,
     });
     resp.status(200).json({
       msg: "El pais ha sido creado exitosamente",
       paiscreate,
     });
-    }catch(error){
-        console.log("Error al crear el pais",error);
-        resp.status(500).json({
-            msg:"No se logró completar la creación del pais",
-        });
-    }
- }
+  } catch (error) {
+    console.log("Error al crear el pais", error);
+    resp.status(500).json({
+      msg: "No se logró completar la creación del pais",
+    });
+  }
+};
 
 //Consultar pais
 export const consultPais = async (req: Request, res: Response) => {
   const { id } = req.params;
   const Paiscons = await pais.findByPk(id);
-  if (!Paiscons) {
+  if (Paiscons) {
     res.json(Paiscons);
   } else {
     res.status(400).json({
@@ -59,7 +59,7 @@ export const updatePais = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { body } = req;
   try {
-    const actPais= await pais.findByPk(id);
+    const actPais = await pais.findByPk(id);
     if (!actPais) {
       return res.status(404).json({
         msg: "No se encontró el pais",
@@ -68,10 +68,7 @@ export const updatePais = async (req: Request, res: Response) => {
 
     console.log("Datos recibidos para proceder la actualización", body);
     await actPais.update({
-      idpais: body.idpais,
       nombre: body.nombre,
-
-      
     });
     res.status(200).json({
       msg: "El pais se ha actualizado correctamente",
@@ -96,7 +93,29 @@ export const delatePais = async (req: Request, res: Response) => {
   }
   await delatePais.destroy();
   res.status(200).json({
-    msg: "El pais  ha sido eliminada de forma correcta",
+    msg: "El pais  ha sido eliminado de forma correcta",
     pais,
   });
+};
+
+export const consultarPaisPorNombre = async (req: Request, res: Response) => {
+  try {
+    const { nombre } = req.params;
+
+    const paisEncontrado = await pais.findOne({
+      where: { nombre: nombre },
+      attributes:["nombre"]
+    });
+
+    if (paisEncontrado) {
+      res.json(paisEncontrado);
+    } else {
+      res.status(400).json({
+        msg: "No se encontro el país especificado",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al consultar el país" });
+  }
 };

@@ -4,7 +4,7 @@ import proyecto from "./proyecto";
 import usuario from "./usuarios";
 
 interface participacionAttributes {
-    idparticipaciones: Number;
+    idparticipaciones?: Number;
     proyectoid: number;
     usuarioid: number;
 }

@@ -13,8 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.delateusua = exports.updateUser = exports.consultUserid = exports.createUser = exports.consultarAllUser = void 0;
+const ciudad_1 = __importDefault(require("../models/ciudad"));
 const usuarios_1 = __importDefault(require("../models/usuarios"));
-//consultar todos los usuarios
+//consultar todas los usuarios
 const consultarAllUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const usuarios = yield usuarios_1.default.findAll({
@@ -38,6 +39,14 @@ const createUser = (req, resp) => __awaiter(void 0, void 0, void 0, function* ()
     const { body } = req;
     try {
         console.log("Datos recibidos ", body);
+        const ciudadEncontrada = yield ciudad_1.default.findOne({
+            where: { nombre: body.nombreCiudad },
+        });
+        if (!ciudadEncontrada) {
+            return resp.status(400).json({
+                msg: `La ciudad ${body.nombreCiudad} no fue encontrada`,
+            });
+        }
         const usuarioc = yield usuarios_1.default.create({
             nodocumento: body.nodocumento,
             nombreapellido: body.nombreapellido,
@@ -45,7 +54,7 @@ const createUser = (req, resp) => __awaiter(void 0, void 0, void 0, function* ()
             telefono: body.telefono,
             estado: body.estado,
             fechaingreso: body.fechaingreso,
-            ciudadid: body.ciudad,
+            ciudadid: ciudadEncontrada.idciudad,
         });
         resp.status(200).json({
             msg: "El usuario ha sido creado exitosamente",
@@ -55,7 +64,7 @@ const createUser = (req, resp) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         console.log("Error al crear el usuario", error);
         resp.status(500).json({
-            msg: "No se logró completar la cración del usuario",
+            msg: "No se logró completar la creación del usuario",
         });
     }
 });
@@ -64,8 +73,11 @@ exports.createUser = createUser;
 const consultUserid = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const usuarioc = yield usuarios_1.default.findByPk(id);
-    if (!usuarioc) {
-        res.json(usuarioc);
+    if (usuarioc) {
+        res.json({
+            msg: "El usuario encontrado es:",
+            usuarioc
+        });
     }
     else {
         res.status(400).json({
@@ -81,8 +93,9 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const actus = yield usuarios_1.default.findByPk(id);
         if (!actus) {
-            return res.status(404).json({
-                msg: "No se encontró el usuario",
+            return;
+            res.status(404).json({
+                msg: "No se encontro el usuario ",
             });
         }
         console.log("Datos recibidos para proceder la actualización", body);
@@ -112,14 +125,14 @@ exports.updateUser = updateUser;
 const delateusua = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const deleteus = yield usuarios_1.default.findByPk(id);
-    if (!usuarios_1.default) {
+    if (!deleteus) {
         return res.status(404).json({
             msg: "No se encontro el usuario",
         });
     }
-    yield usuarios_1.default.destroy();
+    yield deleteus.destroy();
     res.status(200).json({
-        msg: "La ciudad ha sido eliminada de forma correcta",
+        msg: "El usuario ha sido eliminado de forma correcta",
         usuario: usuarios_1.default,
     });
 });

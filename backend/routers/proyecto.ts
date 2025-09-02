@@ -19,12 +19,14 @@ router.post("/crear-proyecto", createProyecto);
 router.put("/actualizar-proyecto/:id", updateProyecto);
 router.delete("/eliminar-proyecto/:id", delateProyecto);
 router.get("/consultar-proyecto-por/:nombre", consultarProyectoPorNombre);
-router.get("/consultar-proyectos-por/:ciudad", consultarProyectoPorCiudad);
+router.get("/consultar-proyectoC-por/:nombre", consultarProyectoPorCiudad);
 router.get(
-  "/consultar-proyectos-por/:departamento",
+  "/consultar-proyectoD-por/:nombreDepto",
   consultarProyectoPorDepartamento
 );
 router.get(
-  "/consultar-proyectos-por/:pais",
+  "/consultar-proyectoP-por/:nombrePais",
   consultarProyectoPorPaís
 );
+
+export default router
