@@ -80,8 +80,7 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const actus = await usuario.findByPk(id);
     if (!actus) {
-      return;
-      res.status(404).json({
+      return res.status(404).json({
         msg: "No se encontro el usuario ",
       });
     }

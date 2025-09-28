@@ -93,8 +93,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const actus = yield usuarios_1.default.findByPk(id);
         if (!actus) {
-            return;
-            res.status(404).json({
+            return res.status(404).json({
                 msg: "No se encontro el usuario ",
             });
         }
