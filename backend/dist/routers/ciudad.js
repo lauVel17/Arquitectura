@@ -9,5 +9,6 @@ router.post("/crear-ciudad", ciudad_1.createCiudad);
 router.put("/actualizar-ciudad/:id", ciudad_1.updateCiudad);
 router.delete("/eliminar-ciudad/:id", ciudad_1.delateCiudad);
 router.get("/consultar-ciudad-por/:nombre", ciudad_1.consultarCiudadPorNombre);
+router.get("/consultar-todos-ciudades/:id", ciudad_1.consultartodosciudad);
 exports.default = router;
 //# sourceMappingURL=ciudad.js.map

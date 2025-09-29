@@ -5,7 +5,8 @@ import {
   consultDepart,
   updateDepart,
   delateDepart,
-  consultarDepartamentoPorNombre
+  consultarDepartamentoPorNombre,
+  consultartodosDepa
 } from "../controllers/departamento";
 
 const router = Router();
@@ -16,5 +17,5 @@ router.post("/crear-departamento", createDepart);
 router.put("/actualizar-departamento/:id", updateDepart);
 router.delete("/eliminar-departamento/:id", delateDepart);
 router.get("/consultar-departamento-por/:nombre", consultarDepartamentoPorNombre);
-
+router.get("/consultar-todos-deptos/:id", consultartodosDepa);
 export default router;

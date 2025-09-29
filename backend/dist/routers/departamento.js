@@ -9,5 +9,6 @@ router.post("/crear-departamento", departamento_1.createDepart);
 router.put("/actualizar-departamento/:id", departamento_1.updateDepart);
 router.delete("/eliminar-departamento/:id", departamento_1.delateDepart);
 router.get("/consultar-departamento-por/:nombre", departamento_1.consultarDepartamentoPorNombre);
+router.get("/consultar-todos-deptos/:id", departamento_1.consultartodosDepa);
 exports.default = router;
 //# sourceMappingURL=departamento.js.map

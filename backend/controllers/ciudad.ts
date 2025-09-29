@@ -135,3 +135,19 @@ export const consultarCiudadPorNombre = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error al consultar la ciudad" });
   }
 };
+export const consultartodosciudad = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const ciudades = await ciudad.findAll({
+    where: {
+      iddepartamento: id,
+    },
+  });
+
+  if (ciudades.length == 0) {
+    res.status(400).json({
+      msg: "No se encontraron ciudades",
+    });
+  } else {
+    return res.json(ciudades);
+  }
+};

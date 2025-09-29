@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.consultarDepartamentoPorNombre = exports.delateDepart = exports.updateDepart = exports.consultDepart = exports.createDepart = exports.consultarDepart = void 0;
+exports.consultartodosDepa = exports.consultarDepartamentoPorNombre = exports.delateDepart = exports.updateDepart = exports.consultDepart = exports.createDepart = exports.consultarDepart = void 0;
 const departamento_1 = __importDefault(require("../models/departamento"));
 const pais_1 = __importDefault(require("../models/pais"));
 //consultar departamento
@@ -148,4 +148,21 @@ const consultarDepartamentoPorNombre = (req, res) => __awaiter(void 0, void 0, v
     }
 });
 exports.consultarDepartamentoPorNombre = consultarDepartamentoPorNombre;
+const consultartodosDepa = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const departamentos = yield departamento_1.default.findAll({
+        where: {
+            idpais: id,
+        },
+    });
+    if (departamentos.length == 0) {
+        res.status(400).json({
+            msg: "No se encontraron departamentos",
+        });
+    }
+    else {
+        return res.json(departamentos);
+    }
+});
+exports.consultartodosDepa = consultartodosDepa;
 //# sourceMappingURL=departamento.js.map

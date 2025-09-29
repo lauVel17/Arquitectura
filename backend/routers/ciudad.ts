@@ -6,7 +6,8 @@ import {
   createCiudad,
   updateCiudad,
   delateCiudad,
-  consultarCiudadPorNombre
+  consultarCiudadPorNombre,
+  consultartodosciudad
 } from "../controllers/ciudad";
 
 const router = Router();
@@ -17,5 +18,5 @@ router.post("/crear-ciudad", createCiudad);
 router.put("/actualizar-ciudad/:id", updateCiudad);
 router.delete("/eliminar-ciudad/:id", delateCiudad);
 router.get("/consultar-ciudad-por/:nombre", consultarCiudadPorNombre);
-
+router.get("/consultar-todos-ciudades/:id", consultartodosciudad);
 export default router;

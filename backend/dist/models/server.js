@@ -22,6 +22,7 @@ const departamento_1 = __importDefault(require("../routers/departamento"));
 const ciudad_1 = __importDefault(require("../routers/ciudad"));
 const proyecto_1 = __importDefault(require("../routers/proyecto"));
 const participaciones_1 = __importDefault(require("../routers/participaciones"));
+const usuario_token_1 = __importDefault(require("../routers/usuario-token"));
 dotenv_1.default.config();
 /* IMPORT RUTAS */
 class server {
@@ -32,7 +33,8 @@ class server {
             departamento: "/api/departamento",
             ciudad: "/api/ciudad",
             proyecto: "/api/proyecto",
-            participaciones: "/api/participaciones"
+            participaciones: "/api/participaciones",
+            usuarioToken: "/api/usToken",
         };
         this.app = (0, express_1.default)();
         /* definir puerto de conexion */
@@ -68,6 +70,7 @@ class server {
         this.app.use(this.apiPaths.ciudad, ciudad_1.default);
         this.app.use(this.apiPaths.proyecto, proyecto_1.default);
         this.app.use(this.apiPaths.participaciones, participaciones_1.default);
+        this.app.use(this.apiPaths.usuarioToken, usuario_token_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {

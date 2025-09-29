@@ -4,7 +4,9 @@ import {
   consultUserid,
   updateUser,
   delateusua,
-  consultarAllUser
+  consultarAllUser,
+  iniciarSesion,
+  consultarIden
 } from "../controllers/usuario";
 
 const router = Router();
@@ -14,5 +16,7 @@ router.get("/consultar-usuario/:id", consultUserid);
 router.post("/crear-usuario", createUser);
 router.put("/actualizar-usuario/:id", updateUser);
 router.delete("/eliminar-usuario/:id", delateusua);
+router.post("/iniciar-sesion", iniciarSesion);
+router.get("/consultar-identificacion/:nodocumento", consultarIden);
 
 export default router;

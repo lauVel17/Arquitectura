@@ -139,3 +139,20 @@ export const consultarDepartamentoPorNombre = async (req: Request, res: Response
     res.status(500).json({ error: "Error al consultar el departamento" });
   }
 };
+export const consultartodosDepa = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const departamentos = await departamento.findAll({
+    where: {
+      idpais: id,
+    },
+  });
+
+  if (departamentos.length == 0) {
+    res.status(400).json({
+      msg: "No se encontraron departamentos",
+    });
+  } else {
+    return res.json(departamentos);
+  }
+};

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.consultarCiudadPorNombre = exports.delateCiudad = exports.updateCiudad = exports.consultCiudad = exports.createCiudad = exports.consultarciudad = void 0;
+exports.consultartodosciudad = exports.consultarCiudadPorNombre = exports.delateCiudad = exports.updateCiudad = exports.consultCiudad = exports.createCiudad = exports.consultarciudad = void 0;
 const ciudad_1 = __importDefault(require("../models/ciudad"));
 const departamento_1 = __importDefault(require("../models/departamento"));
 //consultar todas las ciudades
@@ -147,4 +147,21 @@ const consultarCiudadPorNombre = (req, res) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.consultarCiudadPorNombre = consultarCiudadPorNombre;
+const consultartodosciudad = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const ciudades = yield ciudad_1.default.findAll({
+        where: {
+            iddepartamento: id,
+        },
+    });
+    if (ciudades.length == 0) {
+        res.status(400).json({
+            msg: "No se encontraron ciudades",
+        });
+    }
+    else {
+        return res.json(ciudades);
+    }
+});
+exports.consultartodosciudad = consultartodosciudad;
 //# sourceMappingURL=ciudad.js.map

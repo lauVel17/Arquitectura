@@ -11,6 +11,7 @@ import departamentoRoutes from "../routers/departamento"
 import ciudadRoutes from "../routers/ciudad"
 import proyectoRoutes from "../routers/proyecto"
 import participacionesRoutes from "../routers/participaciones" 
+import usuarioTokenRoutes from "../routers/usuario-token"
 
 dotenv.config();
 
@@ -25,7 +26,8 @@ class server {
     departamento: "/api/departamento",
     ciudad: "/api/ciudad",
     proyecto: "/api/proyecto",
-    participaciones: "/api/participaciones"
+    participaciones: "/api/participaciones",
+       usuarioToken: "/api/usToken",
 
   };
 
@@ -64,6 +66,7 @@ class server {
     this.app.use(this.apiPaths.ciudad, ciudadRoutes);
     this.app.use(this.apiPaths.proyecto, proyectoRoutes);
     this.app.use(this.apiPaths.participaciones, participacionesRoutes);
+       this.app.use(this.apiPaths.usuarioToken, usuarioTokenRoutes);
   }
 
   listen() {

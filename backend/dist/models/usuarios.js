@@ -17,28 +17,31 @@ usuario.init({
     },
     nombreapellido: {
         type: sequelize_1.DataTypes.STRING,
-        field: "nombre_apellido"
+        field: "nombre_apellido",
     },
     correo: {
         type: sequelize_1.DataTypes.STRING,
-        field: "correo"
+        field: "correo",
     },
     telefono: {
         type: sequelize_1.DataTypes.INTEGER,
-        field: "telefono"
+        field: "telefono",
     },
     estado: {
         type: sequelize_1.DataTypes.STRING,
-        field: "estado"
+        field: "estado",
     },
     fechaingreso: {
         type: sequelize_1.DataTypes.DATE,
-        field: "fecha_ingreso"
+        field: "fecha_ingreso",
     },
     ciudadid: {
         type: sequelize_1.DataTypes.INTEGER,
         field: "ciudad_id",
-        references: { model: ciudad_1.default, key: "idciudad" }
+        references: { model: ciudad_1.default, key: "idciudad" },
+    },
+    contrasena: {
+        type: sequelize_1.DataTypes.STRING,
     },
 }, {
     sequelize: conexion_1.default,
@@ -48,11 +51,11 @@ usuario.init({
 });
 ciudad_1.default.hasMany(usuario, {
     foreignKey: "ciudadid",
-    as: "usuario"
+    as: "usuario",
 });
 usuario.belongsTo(ciudad_1.default, {
     foreignKey: "ciudadid",
-    as: "ciudad"
+    as: "ciudad",
 });
 exports.default = usuario;
 //# sourceMappingURL=usuarios.js.map
