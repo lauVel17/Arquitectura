@@ -6,9 +6,6 @@ import {
   updatePart,
   delatePart,
   consultarParticipaciones,
-  postular,
-  consultarProyectosPorUsuario,
-  consultarUsuariosPorProyecto,
 } from "../controllers/participacion";
 
 const router = Router();
@@ -20,8 +17,5 @@ router.get(
   "/consultar-las-participaciones-de-un-usario/:nombre",
   consultarParticipaciones
 );
-router.post("/postularse/:nodocumento/:proyectoid", postular);
-router.post("/consultar-proyectos-usuarios/:nodocumento", consultarProyectosPorUsuario);
-router.get("/consultar-usuarios-proyecto/:idproyecto", consultarUsuariosPorProyecto);
 
 export default router;

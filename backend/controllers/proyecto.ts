@@ -31,10 +31,19 @@ export const createProyecto = async (req: Request, resp: Response) => {
     console.log("Datos recibidos ", body);
 
    
+    const ciudadEncontrada = await ciudad.findOne({
+      where: { nombre: body.ciudadNombre },
+    });
+
+    if (!ciudadEncontrada) {
+      return resp.status(400).json({
+        msg: `No se encontró la ciudad con nombre: ${body.ciudadNombre}`,
+      });
+    }
     const proyCreate = await proyecto.create({
       nombre: body.nombre,
       descripcion: body.descripcion,
-      ciudadid: body.ciudadid, 
+      ciudadid: ciudadEncontrada.idciudad, 
       fechainicio: body.fechainicio,
       fechafin: body.fechafin,
     });
@@ -79,7 +88,10 @@ export const updateProyecto = async (req: Request, res: Response) => {
 
     console.log("Datos recibidos para proceder la actualización", body);
     await proyectUpdate.update({
-
+   /*    idproyecto: body.idproyecto, */
+      nombre: body.nombre,
+      descripcion: body.descripcion,
+      ciudadid: body.ciudadid,
       fechainicio: body.fechainicio,
       fechafin: body.fechafin,
     });

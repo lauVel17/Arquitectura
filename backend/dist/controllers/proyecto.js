@@ -41,10 +41,18 @@ const createProyecto = (req, resp) => __awaiter(void 0, void 0, void 0, function
     const { body } = req;
     try {
         console.log("Datos recibidos ", body);
+        const ciudadEncontrada = yield ciudad_1.default.findOne({
+            where: { nombre: body.ciudadNombre },
+        });
+        if (!ciudadEncontrada) {
+            return resp.status(400).json({
+                msg: `No se encontró la ciudad con nombre: ${body.ciudadNombre}`,
+            });
+        }
         const proyCreate = yield proyecto_1.default.create({
             nombre: body.nombre,
             descripcion: body.descripcion,
-            ciudadid: body.ciudadid,
+            ciudadid: ciudadEncontrada.idciudad,
             fechainicio: body.fechainicio,
             fechafin: body.fechafin,
         });
@@ -88,6 +96,10 @@ const updateProyecto = (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
         console.log("Datos recibidos para proceder la actualización", body);
         yield proyectUpdate.update({
+            /*    idproyecto: body.idproyecto, */
+            nombre: body.nombre,
+            descripcion: body.descripcion,
+            ciudadid: body.ciudadid,
             fechainicio: body.fechainicio,
             fechafin: body.fechafin,
         });

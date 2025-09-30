@@ -19,7 +19,7 @@ const departamento_1 = __importDefault(require("../models/departamento"));
 const consultarciudad = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const ciudades = yield ciudad_1.default.findAll({
-            attributes: ["idciudad", "nombre"],
+            attributes: ["nombre"],
         });
         if (ciudades.length === 0) {
             return res.status(400).json({ msg: "No se encontraron las  ciudades" });
