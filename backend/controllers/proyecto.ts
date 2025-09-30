@@ -5,6 +5,7 @@ import participacion from "../models/participaciones";
 import ciudad from "../models/ciudad";
 import departamento from "../models/departamento";
 import pais from "../models/pais";
+import { Op } from "sequelize";
 //consultar departamento
 export const consultarProy = async (req: Request, res: Response) => {
   try {
@@ -288,5 +289,65 @@ export const consultarProyectoPorPaís = async (req: Request, res: Response) => 
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error al consultar los proyectos por país" });
+  }
+};
+export const postular = async (req: Request, res: Response) => {
+  try {
+    const { nodocumento, proyectoid } = req.params;
+
+    const user = await usuario.findOne({ where: { nodocumento: nodocumento } });
+    if (!user) {
+      return res.status(404).json({ msg: `No se encontró el usuario con documento ${nodocumento}` });
+    }
+
+    const proj = await proyecto.findByPk(proyectoid);
+    if (!proj) {
+      return res.status(404).json({ msg: `No se encontró el proyecto con id ${proyectoid}` });
+    }
+    const yaExiste = await participacion.findOne({
+      where: { usuarioid: nodocumento, proyectoid: proyectoid },
+    });
+
+    if (yaExiste) {
+      return res.status(409).json({ msg: "El usuario ya está postulado en este proyecto" });
+    }
+
+ 
+    const hoy = new Date();
+    const participacionesActivas = await participacion.findAll({
+      where: { usuarioid: nodocumento},
+      include: [
+        {
+          model: proyecto,
+          as: "proyecto",
+          where: { fecha_fin: { [Op.gte]: hoy } },
+        },
+      ],
+    });
+
+    if (participacionesActivas.length >= 2) {
+      return res.status(400).json({
+        msg: "El usuario ya participa en 2 o más proyectos activos y no puede postularse a otro",
+        proyectosActivos: participacionesActivas.map((p: any) => ({
+          id: p.proyecto?.idproyecto,
+          nombre: p.proyecto?.nombre,
+          fechaFin: p.proyecto?.fechafin,
+        })),
+      });
+    }
+
+   
+    const nueva = await participacion.create({
+      usuarioid: +nodocumento,
+      proyectoid:+proyectoid,
+    });
+
+    res.status(201).json({
+      msg: "Postulación realizada con éxito",
+      participacion: nueva,
+    });
+  } catch (error) {
+    console.error("Error al postularse:", error);
+    res.status(500).json({ msg: "Error en el servidor" });
   }
 };

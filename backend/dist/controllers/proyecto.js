@@ -12,11 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.consultarProyectoPorPaís = exports.consultarProyectoPorDepartamento = exports.consultarProyectoPorCiudad = exports.consultarProyectoPorNombre = exports.delateProyecto = exports.updateProyecto = exports.consultProyecto = exports.createProyecto = exports.consultarProy = void 0;
+exports.postular = exports.consultarProyectoPorPaís = exports.consultarProyectoPorDepartamento = exports.consultarProyectoPorCiudad = exports.consultarProyectoPorNombre = exports.delateProyecto = exports.updateProyecto = exports.consultProyecto = exports.createProyecto = exports.consultarProy = void 0;
 const proyecto_1 = __importDefault(require("../models/proyecto"));
+const usuarios_1 = __importDefault(require("../models/usuarios"));
+const participaciones_1 = __importDefault(require("../models/participaciones"));
 const ciudad_1 = __importDefault(require("../models/ciudad"));
 const departamento_1 = __importDefault(require("../models/departamento"));
 const pais_1 = __importDefault(require("../models/pais"));
+const sequelize_1 = require("sequelize");
 //consultar departamento
 const consultarProy = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -273,4 +276,60 @@ const consultarProyectoPorPaís = (req, res) => __awaiter(void 0, void 0, void 0
     }
 });
 exports.consultarProyectoPorPaís = consultarProyectoPorPaís;
+const postular = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { nodocumento, proyectoid } = req.params;
+        const user = yield usuarios_1.default.findOne({ where: { nodocumento: nodocumento } });
+        if (!user) {
+            return res.status(404).json({ msg: `No se encontró el usuario con documento ${nodocumento}` });
+        }
+        const proj = yield proyecto_1.default.findByPk(proyectoid);
+        if (!proj) {
+            return res.status(404).json({ msg: `No se encontró el proyecto con id ${proyectoid}` });
+        }
+        const yaExiste = yield participaciones_1.default.findOne({
+            where: { usuarioid: nodocumento, proyectoid: proyectoid },
+        });
+        if (yaExiste) {
+            return res.status(409).json({ msg: "El usuario ya está postulado en este proyecto" });
+        }
+        const hoy = new Date();
+        const participacionesActivas = yield participaciones_1.default.findAll({
+            where: { usuarioid: nodocumento },
+            include: [
+                {
+                    model: proyecto_1.default,
+                    as: "proyecto",
+                    where: { fecha_fin: { [sequelize_1.Op.gte]: hoy } },
+                },
+            ],
+        });
+        if (participacionesActivas.length >= 2) {
+            return res.status(400).json({
+                msg: "El usuario ya participa en 2 o más proyectos activos y no puede postularse a otro",
+                proyectosActivos: participacionesActivas.map((p) => {
+                    var _a, _b, _c;
+                    return ({
+                        id: (_a = p.proyecto) === null || _a === void 0 ? void 0 : _a.idproyecto,
+                        nombre: (_b = p.proyecto) === null || _b === void 0 ? void 0 : _b.nombre,
+                        fechaFin: (_c = p.proyecto) === null || _c === void 0 ? void 0 : _c.fechafin,
+                    });
+                }),
+            });
+        }
+        const nueva = yield participaciones_1.default.create({
+            usuarioid: +nodocumento,
+            proyectoid: +proyectoid,
+        });
+        res.status(201).json({
+            msg: "Postulación realizada con éxito",
+            participacion: nueva,
+        });
+    }
+    catch (error) {
+        console.error("Error al postularse:", error);
+        res.status(500).json({ msg: "Error en el servidor" });
+    }
+});
+exports.postular = postular;
 //# sourceMappingURL=proyecto.js.map

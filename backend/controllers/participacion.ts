@@ -152,3 +152,106 @@ export const consultarParticipaciones = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error al consultar las participaciones" });
   }
 };
+// Consultar todos los proyectos de un usuario por su número de documento
+export const consultarProyectosPorUsuario = async (req: Request, res: Response) => {
+  try {
+    const { nodocumento } = req.params;
+
+    const usuarioEncontrado = await usuario.findOne({
+      where: { nodocumento: Number(nodocumento) },
+    });
+
+    if (!usuarioEncontrado) {
+      return res.status(404).json({
+        msg: `No se encontró un usuario con número de documento ${nodocumento}`,
+      });
+    }
+
+    
+    const participaciones = await participacion.findAll({
+      where: { usuarioid: Number(nodocumento) },
+      include: [
+        {
+          model: proyecto,
+          as: "proyecto",
+          attributes: ["idproyecto", "nombre", "descripcion", "fechainicio", "fechafin"],
+        },
+      ],
+    });
+
+    if (participaciones.length === 0) {
+      return res.status(200).json({
+        msg: `El usuario con documento ${nodocumento} no tiene proyectos registrados.`,
+        proyectos: [],
+      });
+    }
+
+    res.status(200).json({
+      msg: `El usuario con documento ${nodocumento} participa en ${participaciones.length} proyecto(s):`,
+      proyectos: participaciones.map((p: any) => ({
+        idproyecto: p.proyecto?.idproyecto,
+        nombre: p.proyecto?.nombre,
+        descripcion: p.proyecto?.descripcion,
+        fechainicio: p.proyecto?.fechainicio,
+        fechafin: p.proyecto?.fechafin,
+      })),
+    });
+  } catch (error) {
+    console.error("Error al consultar proyectos por usuario:", error);
+    res.status(500).json({
+      msg: "Error en el servidor al consultar proyectos por usuario",
+    });
+  }
+};
+
+export const consultarUsuariosPorProyecto = async (req: Request, res: Response) => {
+  try {
+    const { idproyecto } = req.params;
+
+    // Verificar si existe el proyecto
+    const proyectoEncontrado = await proyecto.findOne({
+      where: { idproyecto: Number(idproyecto) },
+    });
+
+    if (!proyectoEncontrado) {
+      return res.status(404).json({
+        msg: `No se encontró un proyecto con id ${idproyecto}`,
+      });
+    }
+
+    // Buscar todas las participaciones del proyecto e incluir usuarios
+    const participaciones = await participacion.findAll({
+      where: { proyectoid: Number(idproyecto) },
+      include: [
+        {
+          model: usuario,
+          as: "usuario",
+        },
+      ],
+    });
+
+    if (participaciones.length === 0) {
+      return res.status(200).json({
+        msg: `El proyecto con id ${idproyecto} no tiene usuarios participantes.`,
+        usuarios: [],
+      });
+    }
+
+    res.status(200).json({
+      msg: `El proyecto con id ${idproyecto} tiene ${participaciones.length} participante(s):`,
+      usuarios: participaciones.map((p: any) => ({
+        nodocumento: p.usuario?.nodocumento,
+        nombre: p.usuario?.nombreapellido,
+        apellido: p.usuario?.apellido,
+        email: p.usuario?.correo,
+        telefono: p.usuario?.telefono
+      })),
+    });
+  } catch (error) {
+    console.error("Error al consultar usuarios por proyecto:", error);
+    res.status(500).json({
+      msg: "Error en el servidor al consultar usuarios por proyecto",
+    });
+  }
+};
+

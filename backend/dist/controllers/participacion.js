@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.consultarParticipaciones = exports.delatePart = exports.updatePart = exports.consultPart = exports.createPart = exports.consultarPart = void 0;
+exports.consultarUsuariosPorProyecto = exports.consultarProyectosPorUsuario = exports.consultarParticipaciones = exports.delatePart = exports.updatePart = exports.consultPart = exports.createPart = exports.consultarPart = void 0;
 const participaciones_1 = __importDefault(require("../models/participaciones"));
 const usuarios_1 = __importDefault(require("../models/usuarios"));
 const proyecto_1 = __importDefault(require("../models/proyecto"));
@@ -162,4 +162,104 @@ const consultarParticipaciones = (req, res) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.consultarParticipaciones = consultarParticipaciones;
+// Consultar todos los proyectos de un usuario por su número de documento
+const consultarProyectosPorUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { nodocumento } = req.params;
+        const usuarioEncontrado = yield usuarios_1.default.findOne({
+            where: { nodocumento: Number(nodocumento) },
+        });
+        if (!usuarioEncontrado) {
+            return res.status(404).json({
+                msg: `No se encontró un usuario con número de documento ${nodocumento}`,
+            });
+        }
+        const participaciones = yield participaciones_1.default.findAll({
+            where: { usuarioid: Number(nodocumento) },
+            include: [
+                {
+                    model: proyecto_1.default,
+                    as: "proyecto",
+                    attributes: ["idproyecto", "nombre", "descripcion", "fechainicio", "fechafin"],
+                },
+            ],
+        });
+        if (participaciones.length === 0) {
+            return res.status(200).json({
+                msg: `El usuario con documento ${nodocumento} no tiene proyectos registrados.`,
+                proyectos: [],
+            });
+        }
+        res.status(200).json({
+            msg: `El usuario con documento ${nodocumento} participa en ${participaciones.length} proyecto(s):`,
+            proyectos: participaciones.map((p) => {
+                var _a, _b, _c, _d, _e;
+                return ({
+                    idproyecto: (_a = p.proyecto) === null || _a === void 0 ? void 0 : _a.idproyecto,
+                    nombre: (_b = p.proyecto) === null || _b === void 0 ? void 0 : _b.nombre,
+                    descripcion: (_c = p.proyecto) === null || _c === void 0 ? void 0 : _c.descripcion,
+                    fechainicio: (_d = p.proyecto) === null || _d === void 0 ? void 0 : _d.fechainicio,
+                    fechafin: (_e = p.proyecto) === null || _e === void 0 ? void 0 : _e.fechafin,
+                });
+            }),
+        });
+    }
+    catch (error) {
+        console.error("Error al consultar proyectos por usuario:", error);
+        res.status(500).json({
+            msg: "Error en el servidor al consultar proyectos por usuario",
+        });
+    }
+});
+exports.consultarProyectosPorUsuario = consultarProyectosPorUsuario;
+const consultarUsuariosPorProyecto = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { idproyecto } = req.params;
+        // Verificar si existe el proyecto
+        const proyectoEncontrado = yield proyecto_1.default.findOne({
+            where: { idproyecto: Number(idproyecto) },
+        });
+        if (!proyectoEncontrado) {
+            return res.status(404).json({
+                msg: `No se encontró un proyecto con id ${idproyecto}`,
+            });
+        }
+        // Buscar todas las participaciones del proyecto e incluir usuarios
+        const participaciones = yield participaciones_1.default.findAll({
+            where: { proyectoid: Number(idproyecto) },
+            include: [
+                {
+                    model: usuarios_1.default,
+                    as: "usuario",
+                },
+            ],
+        });
+        if (participaciones.length === 0) {
+            return res.status(200).json({
+                msg: `El proyecto con id ${idproyecto} no tiene usuarios participantes.`,
+                usuarios: [],
+            });
+        }
+        res.status(200).json({
+            msg: `El proyecto con id ${idproyecto} tiene ${participaciones.length} participante(s):`,
+            usuarios: participaciones.map((p) => {
+                var _a, _b, _c, _d, _e;
+                return ({
+                    nodocumento: (_a = p.usuario) === null || _a === void 0 ? void 0 : _a.nodocumento,
+                    nombre: (_b = p.usuario) === null || _b === void 0 ? void 0 : _b.nombreapellido,
+                    apellido: (_c = p.usuario) === null || _c === void 0 ? void 0 : _c.apellido,
+                    email: (_d = p.usuario) === null || _d === void 0 ? void 0 : _d.correo,
+                    telefono: (_e = p.usuario) === null || _e === void 0 ? void 0 : _e.telefono
+                });
+            }),
+        });
+    }
+    catch (error) {
+        console.error("Error al consultar usuarios por proyecto:", error);
+        res.status(500).json({
+            msg: "Error en el servidor al consultar usuarios por proyecto",
+        });
+    }
+});
+exports.consultarUsuariosPorProyecto = consultarUsuariosPorProyecto;
 //# sourceMappingURL=participacion.js.map
