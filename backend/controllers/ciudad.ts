@@ -6,7 +6,7 @@ import departamento from "../models/departamento";
 export const consultarciudad = async (req: Request, res: Response) => {
   try {
     const ciudades = await ciudad.findAll({
-      attributes: ["nombre"],
+      attributes: ["idciudad","nombre"],
     });
 
     if (ciudades.length === 0) {

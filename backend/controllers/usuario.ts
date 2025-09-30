@@ -109,7 +109,7 @@ export const updateUser = async (req: Request, res: Response) => {
       telefono: body.telefono,
       estado: body.estado,
       fechaingreso: body.fechaingreso,
-      ciudadid: body.ciudad,
+      ciudadid: body.ciudadid,
       contrasena: contrasenaEncriptada,
     });
     res.status(200).json({
@@ -221,6 +221,71 @@ export const consultarIden = async (req: Request, res: Response) => {
     console.error("Error al consultar el NIT:", error);
     res.status(500).json({
       msg: "No se pudo completar la operación. Intenta nuevamente más tarde o contacte al administrador.",
+    });
+  }
+};
+
+
+export const actualizarEstadoUsuario = async (req: Request, res: Response) => {
+  const { nodocumento } = req.params;
+  const { estado } = req.body;
+
+  try {
+    const usuarioEncontrado = await usuario.findByPk(nodocumento);
+
+    if (!usuarioEncontrado) {
+      return res.status(404).json({
+        msg: "No se encontró el usuario especificado",
+      });
+    }
+
+    console.log("Estado recibido para actualización:", estado);
+
+    await usuarioEncontrado.update({ estado });
+
+    return res.status(200).json({
+      msg: `El estado del usuario ${usuarioEncontrado.nombreapellido} ha sido cambiado a ${estado}`,
+      usuario: usuarioEncontrado,
+    });
+  } catch (error) {
+    console.error("Error al actualizar el estado del usuario:", error);
+    return res.status(500).json({
+      msg: "No se pudo completar la operación. Intenta nuevamente más tarde o contacte al administrador.",
+    });
+  }
+};
+export const actualizarContrasena = async (req: Request, res: Response) => {
+  const nodocumento = parseInt(req.params.nodocumento, 10);
+  const { contrasena } = req.body;
+
+  try {
+    const usuarioEncontrado = await usuario.findByPk(nodocumento);
+    if (!usuarioEncontrado) {
+      return res.status(404).json({
+        msg: "No se encontró el usuario especificado",
+      });
+    }
+
+    const contrasenaActual = usuarioEncontrado.getDataValue("contrasena");
+    const contrasenaEncriptada = md5(contrasena);
+
+    if (contrasenaEncriptada === contrasenaActual) {
+      return res.status(400).json({
+        msg: "La nueva contraseña no puede ser igual a la contraseña actual.",
+      });
+    }
+
+    await usuarioEncontrado.update({
+      contrasena: contrasenaEncriptada,
+    });
+
+    res.status(200).json({
+      msg: "La contraseña ha sido actualizada exitosamente",
+    });
+  } catch (error) {
+    console.error("Error al actualizar la contraseña:", error);
+    res.status(500).json({
+      msg: "No se pudo completar la operación. Intenta nuevamente más tarde o contacta al administrador.",
     });
   }
 };

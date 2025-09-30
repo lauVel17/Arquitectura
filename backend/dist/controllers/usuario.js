@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.consultarIden = exports.iniciarSesion = exports.delateusua = exports.updateUser = exports.consultUserid = exports.createUser = exports.consultarAllUser = void 0;
+exports.actualizarContrasena = exports.actualizarEstadoUsuario = exports.consultarIden = exports.iniciarSesion = exports.delateusua = exports.updateUser = exports.consultUserid = exports.createUser = exports.consultarAllUser = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const md5_1 = __importDefault(require("md5"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -115,7 +115,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             telefono: body.telefono,
             estado: body.estado,
             fechaingreso: body.fechaingreso,
-            ciudadid: body.ciudad,
+            ciudadid: body.ciudadid,
             contrasena: contrasenaEncriptada,
         });
         res.status(200).json({
@@ -224,4 +224,61 @@ const consultarIden = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.consultarIden = consultarIden;
+const actualizarEstadoUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { nodocumento } = req.params;
+    const { estado } = req.body;
+    try {
+        const usuarioEncontrado = yield usuarios_1.default.findByPk(nodocumento);
+        if (!usuarioEncontrado) {
+            return res.status(404).json({
+                msg: "No se encontró el usuario especificado",
+            });
+        }
+        console.log("Estado recibido para actualización:", estado);
+        yield usuarioEncontrado.update({ estado });
+        return res.status(200).json({
+            msg: `El estado del usuario ${usuarioEncontrado.nombreapellido} ha sido cambiado a ${estado}`,
+            usuario: usuarioEncontrado,
+        });
+    }
+    catch (error) {
+        console.error("Error al actualizar el estado del usuario:", error);
+        return res.status(500).json({
+            msg: "No se pudo completar la operación. Intenta nuevamente más tarde o contacte al administrador.",
+        });
+    }
+});
+exports.actualizarEstadoUsuario = actualizarEstadoUsuario;
+const actualizarContrasena = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const nodocumento = parseInt(req.params.nodocumento, 10);
+    const { contrasena } = req.body;
+    try {
+        const usuarioEncontrado = yield usuarios_1.default.findByPk(nodocumento);
+        if (!usuarioEncontrado) {
+            return res.status(404).json({
+                msg: "No se encontró el usuario especificado",
+            });
+        }
+        const contrasenaActual = usuarioEncontrado.getDataValue("contrasena");
+        const contrasenaEncriptada = (0, md5_1.default)(contrasena);
+        if (contrasenaEncriptada === contrasenaActual) {
+            return res.status(400).json({
+                msg: "La nueva contraseña no puede ser igual a la contraseña actual.",
+            });
+        }
+        yield usuarioEncontrado.update({
+            contrasena: contrasenaEncriptada,
+        });
+        res.status(200).json({
+            msg: "La contraseña ha sido actualizada exitosamente",
+        });
+    }
+    catch (error) {
+        console.error("Error al actualizar la contraseña:", error);
+        res.status(500).json({
+            msg: "No se pudo completar la operación. Intenta nuevamente más tarde o contacta al administrador.",
+        });
+    }
+});
+exports.actualizarContrasena = actualizarContrasena;
 //# sourceMappingURL=usuario.js.map

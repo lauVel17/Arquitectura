@@ -43,15 +43,26 @@ participacion.init(
     }
 );
 
-proyecto.hasMany (participacion, {
-   foreignKey:"proyectoid",
-   as:"participacion" 
+usuario.hasMany(participacion, {
+  foreignKey: "usuarioid",
+  as: "participaciones",
+});
+
+participacion.belongsTo(usuario, {
+  foreignKey: "usuarioid",
+  as: "usuario",
+});
+proyecto.hasMany(participacion, {
+  foreignKey: "proyectoid",
+  as: "participaciones",
 });
 
 participacion.belongsTo(proyecto, {
-    foreignKey:"proyectoid",
-    as:"proyecto"
+  foreignKey: "proyectoid",
+  as: "proyecto",
 });
+
+
 
 // usuario.hasMany (participacion, {
 //    foreignKey:"proyecto",

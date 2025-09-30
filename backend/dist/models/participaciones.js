@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const conexion_1 = __importDefault(require("../db/conexion"));
 const proyecto_1 = __importDefault(require("./proyecto"));
+const usuarios_1 = __importDefault(require("./usuarios"));
 class participacion extends sequelize_1.Model {
 }
 participacion.init({
@@ -29,13 +30,21 @@ participacion.init({
     tableName: "participaciones",
     timestamps: false,
 });
+usuarios_1.default.hasMany(participacion, {
+    foreignKey: "usuarioid",
+    as: "participaciones",
+});
+participacion.belongsTo(usuarios_1.default, {
+    foreignKey: "usuarioid",
+    as: "usuario",
+});
 proyecto_1.default.hasMany(participacion, {
     foreignKey: "proyectoid",
-    as: "participacion"
+    as: "participaciones",
 });
 participacion.belongsTo(proyecto_1.default, {
     foreignKey: "proyectoid",
-    as: "proyecto"
+    as: "proyecto",
 });
 // usuario.hasMany (participacion, {
 //    foreignKey:"proyecto",
